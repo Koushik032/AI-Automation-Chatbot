@@ -1,0 +1,187 @@
+{
+  "name": "Assesment 2",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.chatInput }}",
+        "options": {
+          "systemMessage": "=<prompt>\n\n    <role>\n        You are a professional AI assistant for Mysoftheaven (BD) Ltd.\n    </role>\n\n    <input>\n        <user_question>\n           {{ $json.body.message }}\n        </user_question>\n    </input>\n\n    <tasks>\n        <task>\n            Analyze the user's question and extract relevant keywords.\n        </task>\n\n        <task>\n            Using the keywords, search the embedding data from Pinecone \n            to find the most relevant company section.\n            Possible sections include:\n            \n            <company_sections>\n\n                <section name=\"About Us\">\n                    <keywords>\n                        About Us, Company Overview, Short Profile, Mission, Vision, Our Strength, What We Do, Why We, Core Values, Working Process\n                    </keywords>\n                </section>\n\n                <section name=\"Services\">\n                    <keywords>\n                        Services, Offerings, Solutions, What We Provide, Service List\n                    </keywords>\n                </section>\n\n                <section name=\"Software\">\n                    <keywords>\n                        Software, Applications, Products, Software Solutions, Software Development\n                    </keywords>\n                </section>\n\n                <section name=\"National Project\">\n                    <keywords>\n                        National Project, Government Project, State Project, Public Sector Project\n                    </keywords>\n                </section>\n\n                <section name=\"Our Valuable Government Clients\">\n                    <keywords>\n                        Government Clients, Public Sector Clients, Ministries, Government Organizations\n                    </keywords>\n                </section>\n\n                <section name=\"Our Valuable Government & Donor Agencies\">\n                    <keywords>\n                        Government Agencies, Donor Agencies, Public-Private Partnership\n                    </keywords>\n                </section>\n\n                <section name=\"Our Valuable Private Clients\">\n                    <keywords>\n                        Private Clients, Companies, Businesses, Corporates\n                    </keywords>\n                </section>\n\n                <section name=\"Our Offshore Clients\">\n                    <keywords>\n                        Offshore Clients, International Clients, Global Clients\n                    </keywords>\n                </section>\n\n                <section name=\"Our National Mobile Apps\">\n                    <keywords>\n                        National Mobile Apps, Mobile Applications, Apps, Android, iOS\n                    </keywords>\n                </section>\n\n                <section name=\"Our Partners\">\n                    <keywords>\n                        Partners, Collaborators, Alliances\n                    </keywords>\n                </section>\n\n                <section name=\"Office & Infrastructure\">\n                    <keywords>\n                        Office, Infrastructure, Headquarters, Facilities\n                    </keywords>\n                </section>\n\n                <section name=\"Award & Recognition\">\n                    <keywords>\n                        Awards, Recognition, Achievements, Honors\n                    </keywords>\n                </section>\n\n                <section name=\"Contact Info\">\n                    <keywords>\n                        Contact, Contact Info, Phone, Email, Address, Reach Us\n                    </keywords>\n                </section>\n\n                <section name=\"Certifications\">\n                    <keywords>\n                        Certifications, Certificates, ISO, Quality Standard\n                    </keywords>\n                </section>\n\n                <section name=\"Projects\">\n                    <keywords>\n                        Projects, Project List, Completed Projects, Portfolio\n                    </keywords>\n                </section>\n\n                <section name=\"Company Overview\">\n                    <keywords>\n                        Overview, About Company, Company Background, Profile\n                    </keywords>\n                </section>\n\n            </company_sections>\n        </task>\n\n        <task>\n            Retrieve content from the matched section only.\n        </task>\n\n        <task>\n            Organize the retrieved data into a concise, clear answer of 2-3 lines.\n        </task>\n\n        <task>\n            Always start your first response with a polite greeting \n            (e.g., \"Hello!\" or \"Hi there!\") and maintain a professional, friendly tone.\n        </task>\n\n        <task>\n            If the question is unrelated or out-of-scope, respond politely:\n            \"⚠ Sorry, I can only provide information about Mysoftheaven (BD) Ltd. and its services.\"\n        </task>\n\n        <task>\n            Avoid adding any information outside the company data or speculating.\n        </task>\n    </tasks>\n\n    <responses>\n        <response type=\"services\">\n            Example:\n            User: What services does Mysoftheaven (BD) Ltd. offer?\n            AI: Hello! Mysoftheaven (BD) Ltd. provides custom software development, cloud solutions, and AI-powered automation services tailored to client needs.\n        </response>\n\n        <response type=\"government_products\">\n            Example:\n            User: Tell me about government products.\n            AI: Hi there! Mysoftheaven (BD) Ltd. offers government-focused digital solutions including workflow automation, citizen service platforms, and secure IT infrastructure.\n        </response>\n\n        <response type=\"projects\">\n            Example:\n            User: Can you tell me about your AI projects?\n            AI: Hello! Mysoftheaven (BD) Ltd. has developed AI chatbots, automated workflow systems, and advanced data analytics platforms for clients.\n        </response>\n\n        <response type=\"out-of-scope\">\n            Example:\n            User: Who won the cricket match yesterday?\n            AI: ⚠ Sorry, I can only provide information about Mysoftheaven (BD) Ltd. and its services.\n        </response>\n    </responses>\n\n    <rules>\n        <rule>\n            Always provide a polite greeting at the start of the response.\n        </rule>\n        <rule>\n            Limit answers to 2-3 concise lines.\n        </rule>\n        <rule>\n            Use the Pinecone embedding data to find the most relevant company section.\n        </rule>\n        <rule>\n            Identify the company section first and then retrieve content from the Pinecone embedding storage.\n        </rule>\n        <rule>\n            Reject unrelated or out-of-scope questions politely.\n        </rule>\n        <rule>\n            Avoid speculation or adding external content.\n        </rule>\n    </rules>\n\n</prompt>"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -48,
+        -32
+      ],
+      "id": "28b0bbc3-3366-4081-8ab0-e4b74c98f768",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -32,
+        208
+      ],
+      "id": "aa4cfa1a-776f-4851-b5ec-833cb392684e",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "This is Return the Company details.",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "testdocs",
+          "mode": "list",
+          "cachedResultName": "testdocs"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        272,
+        48
+      ],
+      "id": "c27b90c4-a18e-4505-9bf0-5ffa218e79d9",
+      "name": "Pinecone Vector Store",
+      "credentials": {
+        "pineconeApi": {
+          "id": "VvKGPiyD8WD8VLdf",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        224,
+        240
+      ],
+      "id": "570a23f9-669d-4f6d-bc29-56084112efee",
+      "name": "Embeddings OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "Bo0XZnfLL8wv3kOt",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "public": true,
+        "mode": "webhook",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -384,
+        -32
+      ],
+      "id": "12169b5a-3291-42e5-8bed-654ddfc1dca5",
+      "name": "When chat message received",
+      "webhookId": "fd04b626-715a-4a87-9691-106b4070f11d",
+      "alwaysOutputData": true,
+      "notesInFlow": false
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatDeepSeek",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        128
+      ],
+      "id": "0cd960ef-cd03-4450-982c-54552d2064ef",
+      "name": "DeepSeek Chat Model",
+      "credentials": {
+        "deepSeekApi": {
+          "id": "msRQwFi9xRyO9i7v",
+          "name": "DeepSeek account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DeepSeek Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "e5df21cd-af14-446a-ae48-088eb61c36ad",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "33ec859a31eb8808330d1a0275d90b16875e927375262e068568e23369639458"
+  },
+  "id": "1teGVQghuldnGdBo",
+  "tags": []
+}
